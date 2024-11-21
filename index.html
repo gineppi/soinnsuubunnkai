@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+	<head>
+    <title>素因数分解</title>
+    <meta charset="UTF-8">
+	</head>
+	<body>
+		<canvas id="canvas" width="1000" height="600"></canvas>
+		<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+	let question = 1;
+	let question_count = 0;
+	let p_number = ["2","3","5","7","11","13","17","19","23"];
+	let press_key = [false,false,false,false,false,false];
+	let press_can = [true,true,true,true,true,true];
+	let b_press_key = ["a","s","d","f","g","h"];
+	let s_press_key = ["A","S","D","F","G","H"];
+	let mode = 5
+	let numberPress = [];
+	let pressEnter = false;
+	let reloadEnter = true;
+	let s_press = false;
+	let numberStack = "aaaa";
+	let inputNumber = "";
+	let level = 2;
+	let i = 0;
+	let text_size = 130;
+	let re_time = 1;
+	let combo = 0;
+	let score = 0;
+	let sc = "title";
+
+document.addEventListener("keyup",KeyUpH,false);
+document.addEventListener("keydown",KeyDownH,false);
+returnToTitle()
+function returnToTitle(){
+	question = 1;
+	question_count = 0;
+	p_number = ["2","3","5","7","11","13","17","19","23"];
+	press_key = [false,false,false,false,false,false];
+	press_can = [true,true,true,true,true,true];
+	b_press_key = ["a","s","d","f","g","h"];
+	s_press_key = ["A","S","D","F","G","H"];
+	mode = 5
+	numberPress = [];
+	pressEnter = false;
+	reloadEnter = true;
+	s_press = false;
+	numberStack = "aaaa";
+	inputNumber = "";
+	level = 2;
+	i = 0;
+	text_size = 130;
+	re_time = 1;
+	combo = 0;
+	score = 0;
+	sc = "title";
+	reset();
+}
+function reset(){
+	re_time = 1;
+	question = 1;
+	numberStack = "";
+	for(var i = 0;i < level;i++){
+		question = question * p_number[Math.floor(Math.random() * mode)];
+	}
+}
+
+function KeyUpH(e){
+	for(var i = 0;i < press_key.length;i++){
+		if(e.key === b_press_key[i] || e.key === s_press_key[i]){
+			press_key[i] = false;
+		}
+	}
+	if(e.key === "Enter"){
+		pressEnter = false;
+	}
+	if(e.key === "x" || e.key === "X"){
+		inputNumber = "";
+	}
+	if(e.key === "Enter"){
+		reloadEnter = true;
+	}
+
+}
+
+function KeyDownH(e){
+	for(var i = 0;i < press_key.length;i++){
+		if(e.key === b_press_key[i] || e.key === s_press_key[i]){
+			press_key[i] = true;
+		}
+	}
+	if(e.key === "Enter"){
+		if(sc === "gameover"){
+			returnToTitle();
+			sc = "title"
+		}
+		pressEnter = true;
+	}
+	if(e.key === "s" || e.key === "S"){
+		s_press = true;
+	}
+	for(var i=1;i<10;i++){
+		if(e.key === i.toString() && sc === "game"){
+			inputNumber += i.toString();
+		}
+	}
+	if(e.key === "Backspace"){
+		inputNumber = inputNumber.substr(0,inputNumber.length - 1);
+	}
+	if(e.key === "o" || e.key === "O" && sc === "title"){
+		if(mode < p_number.length) mode += 1;else mode = 5;
+	}else if(e.key === "l" || e.key === "L" && sc === "title"){
+		if(mode > 5) mode -= 1;else mode = p_number.length;
+	}
+}
+
+function text(){
+	ctx.font = String(text_size + 80) + "px sans-serif";
+	ctx.textBaseline = "middle";
+	ctx.textAlign = "center";
+	ctx.fillStyle = "#fff";
+	ctx.strokeStyle = "#fff";
+	ctx.lineWidth = 4;
+	ctx.strokeText(question,canvas.width / 2,canvas.height / 2);
+	ctx.fillText(question,canvas.width / 2,canvas.height / 2);
+	ctx.font = "50px sans-serif";
+	ctx.textAlign = "left";
+	ctx.fillText("COMBO",80,160);
+	ctx.font = String(text_size) + "px sans-serif";
+	ctx.fillStyle = "#ffff00";
+	ctx.strokeStyle = "#ffff00";
+	ctx.strokeText(combo,265,150);
+	ctx.fillText(combo,265,150);
+	ctx.font = "50px sans-serif";
+	ctx.fillStyle = "#fff";
+	ctx.strokeStyle = "#fff";
+	ctx.fillText(score,80,215);
+	ctx.textAlign = "center";
+	ctx.fillText(numberStack,canvas.width / 2,440);
+	ctx.fillText(inputNumber,canvas.width / 2,500);
+}
+
+function countdown(){
+	ctx.fillStyle = "#ff0000";
+	ctx.fillRect(0,0,canvas.width * re_time,80);
+}
+
+function gameover(){
+	if(!localStorage.hasOwnProperty(mode.toString())){
+		localStorage.setItem(mode.toString(),score.toString());
+	}else if(Number(localStorage.getItem(mode.toString())) < score){
+		localStorage.setItem(mode.toString(),score.toString());
+	}
+	ctx.fillStyle = "rgba(0,0,0,0.8)";
+	ctx.fillRect(0,0,canvas.width,canvas.height);
+	ctx.fillStyle = "white";
+	ctx.font = "200px sans-serif"
+	ctx.textAlign = "center";
+	ctx.lineWidth = 10;
+	ctx.strokeText(score,canvas.width / 2,canvas.height / 2);
+	ctx.fillText(score,canvas.width / 2,canvas.height / 2);
+	ctx.font = "35px sans-serif";
+	ctx.fillText("Enterキーでタイトルに戻る",canvas.width / 2,canvas.height / 2 + 150);
+}
+
+function updata(){
+	if(pressEnter && reloadEnter && p_number.includes(inputNumber)){
+		reloadEnter = false;
+		if(question % Number(inputNumber) == 0){
+		combo += 1;
+		score += 100 + level * 50 + combo * 10;
+		text_size = 135;
+		if(numberStack === ""){
+			numberStack = inputNumber;
+		}else{
+			numberStack = numberStack + " × " + inputNumber.toString();
+		}
+		if(question / Number(inputNumber) == 1){
+			if(question_count > 7){
+				level += 1;
+				question_count = 0;
+			}else{
+				question_count += 1;
+			}
+			score += combo * (500 + level * 250);
+			reset();
+		}else{
+			question = question / Number(inputNumber);
+		}
+		}else{
+			combo = 0;
+			re_time -= 0.1;
+		}
+		inputNumber = "";
+	}
+	if(re_time - 0.001 > 0){
+		re_time -= 0.001;
+	}else{
+		sc = "gameover"
+		return
+	}
+	if(text_size - 10 > 75){
+		text_size -= 10;
+	}
+}
+
+function title(){
+	ctx.textAlign = "center";
+	ctx.textBaseline = "middle";
+	ctx.fillStyle = "#fff";
+	ctx.strokeStyle = "#fff";
+	ctx.font = "100px arial";
+	ctx.lineWidth = 2;
+	ctx.strokeText("素因数分解",canvas.width / 2,canvas.height / 2 - 200);
+	ctx.fillText("素因数分解",canvas.width / 2,canvas.height / 2 - 200);
+	ctx.font = "40px sans-serif";
+	ctx.fillText("start to s key",canvas.width / 2,canvas.height / 2 + 200);
+	ctx.fillText(p_number[mode - 1].toString() + "までバージョン",canvas.width / 2,canvas.height / 2 - 100)
+	if(localStorage.hasOwnProperty(mode.toString())){
+		ctx.fillText("世界記録:" + localStorage.getItem(mode.toString()),canvas.width / 2,canvas.height / 2)
+	}else{
+		ctx.fillText("世界記録:未計測",canvas.width / 2,canvas.height / 2)
+	}
+	if(s_press){
+		for(let i = 0;i<press_key.length;i++){
+			press_key[i] = false;
+		}
+		sc = "game";
+	}
+}
+
+function draw(){
+	ctx.clearRect(0,0,canvas.width,canvas.height);
+	if(sc === "title"){
+		title();
+	}else if(sc === "game"){
+		countdown();
+		text();
+		updata();
+	}else if(sc === "gameover"){
+		gameover();
+	}
+}
+var interval = setInterval(draw,10);
+
+		</script>
+	</body>
+</html>
