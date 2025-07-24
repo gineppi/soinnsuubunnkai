@@ -14,7 +14,7 @@ const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 	let question = 1;
 	let question_count = 0;
-	let p_number = ["2","3","5","7","11","13","17","19","23"];
+	let p_number = ["2","3","5","7","11","13","17","19","23","29","31","37","43"];
 	let press_key = [false,false,false,false,false,false];
 	let press_can = [true,true,true,true,true,true];
 	let b_press_key = ["a","s","d","f","g","h"];
@@ -40,7 +40,7 @@ returnToTitle()
 function returnToTitle(){
 	question = 1;
 	question_count = 0;
-	p_number = ["2","3","5","7","11","13","17","19","23"];
+	p_number = ["2","3","5","7","11","13","17","19","23","29","31","37","43"];
 	press_key = [false,false,false,false,false,false];
 	press_can = [true,true,true,true,true,true];
 	b_press_key = ["a","s","d","f","g","h"];
@@ -220,12 +220,14 @@ function title(){
 	ctx.fillText("素因数分解",canvas.width / 2,canvas.height / 2 - 200);
 	ctx.font = "40px sans-serif";
 	ctx.fillText("start to s key",canvas.width / 2,canvas.height / 2 + 200);
-	ctx.fillText(p_number[mode - 1].toString() + "までバージョン",canvas.width / 2,canvas.height / 2 - 100)
+	ctx.fillText("2 ~ " + p_number[mode - 1].toString() + " version",canvas.width / 2,canvas.height / 2 - 100)
 	if(localStorage.hasOwnProperty(mode.toString())){
-		ctx.fillText("世界記録:" + localStorage.getItem(mode.toString()),canvas.width / 2,canvas.height / 2)
+		ctx.fillText("your best record:" + localStorage.getItem(mode.toString()),canvas.width / 2,canvas.height / 2)
 	}else{
-		ctx.fillText("世界記録:未計測",canvas.width / 2,canvas.height / 2)
+		ctx.fillText("your best record:none",canvas.width / 2,canvas.height / 2)
 	}
+  ctx.font = "30px arial";
+	ctx.fillText("change level to O or L key.",canvas.width / 2,canvas.height / 2 + 100);
 	if(s_press){
 		for(let i = 0;i<press_key.length;i++){
 			press_key[i] = false;
